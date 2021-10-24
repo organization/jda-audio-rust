@@ -1,0 +1,13 @@
+[package]
+name = "udp-queue"
+version = "0.1.0"
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+jni = "0.19.0"
+crossbeam-channel = "0.5.1"
+log = "0.4.14"
+pretty_env_logger = "0.4.0"

@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+}
+
+group 'dev.kiwiyou'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://m2.dv8tion.net/releases'
+    }
+}
+
+dependencies {
+    implementation group: 'net.dv8tion', name: 'JDA', version: '4.3.0_336'
+    implementation group: 'com.sedmelluq', name: 'lava-common', version: '1.1.2'
+}
+
+task buildRust(type: Exec) {
+    workingDir 'udp-queue'
+    commandLine 'cargo', 'build', '--release'
+}
+
+build {
+    dependsOn compileJava, buildRust
+}
