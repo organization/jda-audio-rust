@@ -1,25 +1,34 @@
 package dev.kiwiyou.jda;
 
 public class UdpLoop {
-    private UdpSender sender;
-    private long stopperHandle;
-    private long loopHandle;
+    private final UdpSender sender;
+    private final UdpStopper stopper;
+    private final long loopHandle;
+    private boolean disposed = false;
 
     public UdpLoop(int capacity) {
         this.loopHandle = UdpLoopLibrary.createLoop(capacity);
-        this.stopperHandle = UdpLoopLibrary.createStopper(this.loopHandle);
+        this.stopper = new UdpStopper(UdpLoopLibrary.createStopper(this.loopHandle));
         this.sender = new UdpSender(capacity, UdpLoopLibrary.getSender(this.loopHandle));
     }
 
-    public UdpSender createSender() {
+    public UdpSender newSender() {
         return sender.derive();
     }
 
     public void run() {
+        this.disposed = true;
         UdpLoopLibrary.runLoop(this.loopHandle);
     }
 
     public void stop() {
-        UdpLoopLibrary.signalStop(this.stopperHandle);
+        this.stopper.stop();
+    }
+
+    public void dispose() {
+        if (!disposed) {
+            UdpLoopLibrary.disposeLoop(this.loopHandle);
+            this.disposed = true;
+        }
     }
 }

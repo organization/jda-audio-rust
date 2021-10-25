@@ -108,6 +108,21 @@ pub extern "system" fn Java_dev_kiwiyou_jda_UdpLoopLibrary_createLoop(
 
 /*
  * Class:     dev_kiwiyou_jda_UdpLoopLibrary
+ * Method:    disposeLoop
+ * Signature: (J)J
+ */
+#[no_mangle]
+pub extern "system" fn Java_dev_kiwiyou_jda_UdpLoopLibrary_disposeLoop(
+    _: JNIEnv,
+    _: JClass,
+    handle: jlong,
+) {
+    debug!("disposeLoop call");
+    unsafe { Box::from_raw(handle as *mut UdpLoop) };
+}
+
+/*
+ * Class:     dev_kiwiyou_jda_UdpLoopLibrary
  * Method:    runLoop
  * Signature: (J)V
  */
@@ -149,6 +164,21 @@ pub extern "system" fn Java_dev_kiwiyou_jda_UdpLoopLibrary_createStopper(
     debug!("createStopper call");
     let udp_loop = Box::leak(unsafe { Box::from_raw(handle as *mut UdpLoop) });
     Box::leak(Box::new(udp_loop.stop_tx.clone())) as *mut _ as jlong
+}
+
+/*
+ * Class:     dev_kiwiyou_jda_UdpLoopLibrary
+ * Method:    disposeStopper
+ * Signature: (J)J
+ */
+#[no_mangle]
+pub extern "system" fn Java_dev_kiwiyou_jda_UdpLoopLibrary_disposeStopper(
+    _: JNIEnv,
+    _: JClass,
+    handle: jlong,
+) {
+    debug!("disposeStopper call");
+    unsafe { Box::from_raw(handle as *mut Sender<()>) };
 }
 
 /*

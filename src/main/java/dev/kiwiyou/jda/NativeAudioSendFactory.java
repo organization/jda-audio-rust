@@ -47,7 +47,7 @@ public class NativeAudioSendFactory implements IAudioSendFactory {
             if (this.loop == null) {
                 this.setupLoop();
             }
-            return this.loop.createSender();
+            return this.loop.newSender();
         } else {
             return null;
         }
@@ -58,6 +58,7 @@ public class NativeAudioSendFactory implements IAudioSendFactory {
         if (this.loop != null && this.systems.isEmpty()) {
             this.packetScheduler.shutdown();
             this.loop.stop();
+            this.loop = null;
         }
     }
 

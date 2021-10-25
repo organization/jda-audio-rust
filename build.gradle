@@ -18,13 +18,22 @@ repositories {
 dependencies {
     implementation group: 'net.dv8tion', name: 'JDA', version: '4.3.0_336'
     implementation group: 'com.sedmelluq', name: 'lava-common', version: '1.1.2'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.1'
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.8.1'
 }
 
 task buildRust(type: Exec) {
     workingDir 'udp-queue'
     commandLine 'cargo', 'build', '--release'
+
+    copy {
+        from 'udp-queue/target/release/libudp_queue.so'
+        into 'build/libs/'
+    }
 }
 
-build {
-    dependsOn compileJava, buildRust
+test {
+    useJUnitPlatform()
+    dependsOn buildRust
+    jvmArgs += [ '-Djava.library.path=build/libs' ]
 }
