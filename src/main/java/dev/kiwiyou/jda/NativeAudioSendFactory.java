@@ -5,16 +5,16 @@ import net.dv8tion.jda.api.audio.factory.IAudioSendSystem;
 import net.dv8tion.jda.api.audio.factory.IPacketProvider;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Set;
+import java.util.Map;
 import java.util.concurrent.*;
 
 public class NativeAudioSendFactory implements IAudioSendFactory {
-    private final Set<NativeAudioSendSystem> systems;
+    private final Map<NativeAudioSendSystem, Boolean> systems;
     private UdpLoop loop;
     private ScheduledExecutorService packetScheduler;
 
     public NativeAudioSendFactory() {
-        this.systems = new ConcurrentHashMap<NativeAudioSendSystem, Boolean>().keySet();
+        this.systems = new ConcurrentHashMap<>();
     }
 
     @NotNull
@@ -37,13 +37,13 @@ public class NativeAudioSendFactory implements IAudioSendFactory {
     }
 
     public void flushAll() {
-        for (NativeAudioSendSystem system : this.systems) {
+        for (NativeAudioSendSystem system : this.systems.keySet()) {
             system.flush();
         }
     }
 
     public UdpSender addSystem(NativeAudioSendSystem system) {
-        if (this.systems.add(system)) {
+        if (this.systems.put(system, true) == null) {
             if (this.loop == null) {
                 this.setupLoop();
             }
