@@ -5,8 +5,11 @@ import com.sedmelluq.lava.common.natives.NativeLibraryLoader;
 import java.nio.ByteBuffer;
 
 public class UdpLoopLibrary {
+    private static final NativeLibraryLoader nativeLoader =
+            NativeLibraryLoader.create(UdpLoopLibrary.class, "udp_queue");
+
     static {
-        System.loadLibrary("udp_queue");
+        nativeLoader.load();
     }
 
     public static native boolean queuePacket(long senderHandle, ByteBuffer packet, String host, int port);
